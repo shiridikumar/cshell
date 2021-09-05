@@ -3,3 +3,5 @@
 #include<stdlib.h>
 #include<limits.h>
 #include<string.h>
+#include <dirent.h>
+#include<sys/stat.h>

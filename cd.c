@@ -1,18 +1,35 @@
 #include "headers.h"
-#include "prompt.h"
-extern char * path;
+extern char *path;
 
-void cd(char *c)
+void cd(char *c, char **arr, int comm)
 {
-    char *directory = strtok(NULL, " ");
+    char *directory = (char *)malloc(300 * sizeof(char));
+    int i = 0, j = 0;
     char d[100];
-    if (chdir(directory) != 0)
+    if (comm == 1)
     {
-        perror("Directory");
+        if (chdir(getenv("HOME"))!= 0)
+        {
+            perror("Directory");
+            
+        }
+        else{
+            char *wd = getcwd(d, 100);
+            strcpy(path, wd);
+
+        }
     }
     else
     {
-        char *wd=getcwd(d,100);
-        strcpy(path,wd);
+        strcpy(directory, arr[1]);
+        if (chdir(directory) != 0)
+        {
+            perror("Directory");
+        }
+        else
+        {
+            char *wd = getcwd(d, 100);
+            strcpy(path, wd);
+        }
     }
 }
