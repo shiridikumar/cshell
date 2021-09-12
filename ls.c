@@ -34,7 +34,7 @@ void display(int lf,int af,char * dir){
     char emp[10];
     char siz[64];
     DIR *di=opendir(dir);
-    printf("\n%s:\n",dir);
+    printf("%s:\n",dir);
     char temp[200];
     stat(dir,&st);
     long tot=0;
@@ -108,7 +108,6 @@ void ls(char *c,char **arr,int comm ){
         af=0;
     }
     int i=1;
-    printf("%d %d",lf,af);
     while(i<comm){
         if(arr[i][0]=='-'){
             if(strcmp(arr[i],"-a")==0){
@@ -123,10 +122,15 @@ void ls(char *c,char **arr,int comm ){
         }
         i++; 
     }
-    printf("%d %d***\n",lf,af);
     i=1,count=0;
     while(i<comm){
         if(arr[i][0]!='-'){
+            if(strcmp(arr[i],"~")==0){
+                strcpy(temp,getenv("HOME"));
+                display(lf,af,temp);
+                count++;
+                break;
+            }
             strcpy(temp,dir);
             strcat(temp,"/");
             strcat(temp,arr[i]);
@@ -135,7 +139,6 @@ void ls(char *c,char **arr,int comm ){
         }
         i++;
     }
-    printf("%d %d\n",lf,af);
     (count==0)?display(lf,af,dir):count+0;
 
 }

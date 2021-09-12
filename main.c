@@ -2,12 +2,16 @@
 
 char *path;
 
+char *invoked;
+
 int main()
 {
+    invoked=(char *)malloc(200*sizeof(char));
     path=(char *)malloc(200*sizeof(char));
     char initial[100];
     getcwd(initial,100);
     strcpy(path,initial);
+    strcpy(invoked,initial);
     while (1)
     {
         prompt();
@@ -26,12 +30,15 @@ int main()
         if(strcmp(arr[0],"cd")==0)
             cd(d,arr,comm);
 
-        if(strcmp(arr[0],"echo")==0)
+        else if(strcmp(arr[0],"echo")==0)
             echo(d,arr,comm);
-        if(strcmp(arr[0],"pwd")==0)
+        else if(strcmp(arr[0],"pwd")==0)
             pwd(d,arr,comm);
-        if(strcmp(arr[0],"ls")==0){
+        else if(strcmp(arr[0],"ls")==0){
             ls(d,arr,comm);
+        }
+        else{
+            syscom(d,arr,comm);
         }
     }
 }

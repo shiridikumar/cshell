@@ -19,6 +19,22 @@ void cd(char *c, char **arr, int comm)
 
         }
     }
+    else if(strcmp(arr[1],"~")==0 || strcmp(arr[1],"")==0){
+        if (chdir(getenv("HOME"))!= 0)
+        {
+            perror("Directory");
+            
+        }
+        else{
+            char *wd = getcwd(d, 100);
+            strcpy(path, wd);
+
+        }
+
+    }
+    else if(comm>2){
+        printf("Invalid no of aguments\n");
+    }
     else
     {
         strcpy(directory, arr[1]);
