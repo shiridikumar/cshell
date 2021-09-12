@@ -9,20 +9,20 @@ char* dateformat(char* s, time_t v)
         return s;
 }
 
-void permissions(char *dir, char *per ){
+void permissions(char *dir, char *permission ){
     struct stat st;
     stat(dir,&st);
-    per[0]=S_ISREG(st.st_mode)?'-':'d';
-    per[1]=(st.st_mode & S_IRUSR) > 0 ? 'r' : '-';
-    per[2]=(st.st_mode & S_IWUSR) > 0 ? 'w' : '-';
-    per[3]=(st.st_mode & S_IXUSR) > 0 ? 'x' : '-';
-    per[4]=(st.st_mode & S_IRGRP) > 0 ? 'r' : '-';
-    per[5]=(st.st_mode & S_IWGRP) > 0 ? 'w' : '-';
-    per[6]=(st.st_mode & S_IXGRP) > 0 ? 'x' : '-';
-    per[7]=(st.st_mode & S_IROTH) > 0 ? 'r' : '-';
-    per[8]=(st.st_mode & S_IWOTH) > 0 ? 'w' : '-';
-    per[9]=(st.st_mode & S_IXOTH) > 0 ? 'x' : '-';
-    per[10]='\0';
+    permission[0]=S_ISREG(st.st_mode)?'-':'d';
+    permission[1]=(st.st_mode & S_IRUSR) > 0 ? 'r' : '-';
+    permission[2]=(st.st_mode & S_IWUSR) > 0 ? 'w' : '-';
+    permission[3]=(st.st_mode & S_IXUSR) > 0 ? 'x' : '-';
+    permission[4]=(st.st_mode & S_IRGRP) > 0 ? 'r' : '-';
+    permission[5]=(st.st_mode & S_IWGRP) > 0 ? 'w' : '-';
+    permission[6]=(st.st_mode & S_IXGRP) > 0 ? 'x' : '-';
+    permission[7]=(st.st_mode & S_IROTH) > 0 ? 'r' : '-';
+    permission[8]=(st.st_mode & S_IWOTH) > 0 ? 'w' : '-';
+    permission[9]=(st.st_mode & S_IXOTH) > 0 ? 'x' : '-';
+    permission[10]='\0';
 }
 
 void display(int lf,int af,char * dir){
