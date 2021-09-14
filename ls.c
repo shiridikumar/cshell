@@ -2,6 +2,7 @@
 #include<time.h>
 #include<pwd.h>
 #include<math.h>
+extern char *invoked;
 
 char* dateformat(char* s, time_t v)
 {
@@ -126,7 +127,7 @@ void ls(char *c,char **arr,int comm ){
     while(i<comm){
         if(arr[i][0]!='-'){
             if(strcmp(arr[i],"~")==0){
-                strcpy(temp,getenv("HOME"));
+                strcpy(temp,getenv(invoked));
                 display(lf,af,temp);
                 count++;
                 break;

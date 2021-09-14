@@ -1,5 +1,6 @@
 #include "headers.h"
 extern char *path;
+extern char *invoked;
 
 void cd(char *c, char **arr, int comm)
 {
@@ -8,7 +9,7 @@ void cd(char *c, char **arr, int comm)
     char d[100];
     if (comm == 1)
     {
-        if (chdir(getenv("HOME"))!= 0)
+        if (chdir(invoked)!= 0)
         {
             perror("Directory");
             
@@ -20,7 +21,7 @@ void cd(char *c, char **arr, int comm)
         }
     }
     else if(strcmp(arr[1],"~")==0 || strcmp(arr[1],"")==0){
-        if (chdir(getenv("HOME"))!= 0)
+        if (chdir(invoked)!= 0)
         {
             perror("Directory");
             

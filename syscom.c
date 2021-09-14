@@ -36,6 +36,9 @@ void syscom(char *c, char **arr, int comm)
                 setpgid(0, 0);
                 execvp(args[0], args);
             }
+            else{
+                printf("%d\n",x);
+            }
         }
         else
         {
@@ -43,6 +46,7 @@ void syscom(char *c, char **arr, int comm)
             x = fork();
             if (x == 0)
             {
+                printf("%d",getpid());
                 execvp(args[0], args);
             }
             else
