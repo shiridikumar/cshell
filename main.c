@@ -3,6 +3,8 @@
 char *path;
 
 char *invoked;
+int *bgproc;
+int proc;
 
 int main()
 {
@@ -12,6 +14,8 @@ int main()
     getcwd(initial,100);
     strcpy(path,initial);
     strcpy(invoked,initial);
+    proc=0;
+    bgproc=(int *)malloc(1000*sizeof(int));
     while (1)
     {
         prompt();

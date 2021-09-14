@@ -1,5 +1,11 @@
 #include "headers.h"
+extern int* bgproc;
+extern int proc;
 
+void exitted(){
+    wait(NULL);
+    return;
+}
 void syscom(char *c, char **arr, int comm)
 {
     char *command;
@@ -37,6 +43,8 @@ void syscom(char *c, char **arr, int comm)
                 execvp(args[0], args);
             }
             else{
+                bgproc[proc++]=x;
+                signal(SIGCHLD,exitted);
                 printf("%d\n",x);
             }
         }
