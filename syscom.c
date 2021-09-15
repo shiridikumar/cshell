@@ -2,16 +2,14 @@
 extern int* bgproc;
 extern int proc;
 
-void exitted(){
-    wait(NULL);
-    return;
-}
+
+
 void syscom(char *c, char **arr, int comm)
 {
     char *command;
     strcpy(command, c);
     char **args;
-    int x = 111;
+    pid_t x = 111;
     args = (char **)malloc((comm + 1) * sizeof(char **));
     int count = 0;
     int flag = 0;
@@ -40,12 +38,16 @@ void syscom(char *c, char **arr, int comm)
             if (x == 0)
             {
                 setpgid(0, 0);
-                execvp(args[0], args);
+                if(execvp(args[0], args)<0){
+                    perror("Invalid Command");
+                }
+                exit(0);
             }
             else{
-                bgproc[proc++]=x;
-                signal(SIGCHLD,exitted);
-                printf("%d\n",x);
+                printf("Process id %d\n",x);
+                bp[b].pid=x;
+                bp[b].name=args[0];
+                b++;
             }
         }
         else
@@ -54,8 +56,9 @@ void syscom(char *c, char **arr, int comm)
             x = fork();
             if (x == 0)
             {
-                printf("%d",getpid());
-                execvp(args[0], args);
+                if(execvp(args[0], args)<0){
+                    perror("Invalid Command");
+                }
             }
             else
             {

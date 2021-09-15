@@ -7,3 +7,21 @@
 #include <dirent.h>
 #include<sys/stat.h>
 #include<sys/wait.h>
+
+
+struct bg_proc{
+    int pid;
+    char* name;
+};
+
+struct bg_proc bp[100];
+
+int b;
+
+struct exit_proc{
+    int status;
+    int pid;
+    char* name;
+};
+int mem;
+
