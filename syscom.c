@@ -2,8 +2,6 @@
 extern int* bgproc;
 extern int proc;
 
-
-
 void syscom(char *c, char **arr, int comm)
 {
     char *command;

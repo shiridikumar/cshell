@@ -2,12 +2,12 @@
 #include "headers.h"
 extern char *path;
 extern char *invoked;
+extern char *user;
+extern char *sysname;
 void prompt() {
-    char *user;
     int cmp;
     user=(char *)malloc(30*sizeof(char));
     user=getlogin();
-    char * sysname;
     sysname=(char *)malloc(30*sizeof(char));
     gethostname(sysname,HOST_NAME_MAX+1);
     cmp=strncmp(path,invoked,strlen(invoked));
