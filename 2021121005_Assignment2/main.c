@@ -6,10 +6,12 @@ int *bgproc;
 int proc;
 char *user;
 char *sysname;
+char *prev;
 int f;
 
 struct bg_proc bp[100];
 b=0;
+
 
 struct exit_proc ep[100];
 mem=0;
@@ -54,6 +56,7 @@ void check_exitted(){
 }
 int main()
 {
+    prev=(char *)malloc(200*sizeof(char));
     char * hist_path=(char *)malloc(100*sizeof(char));
     strcpy(hist_path,getenv("HOME"));
     struct stat st;
