@@ -128,7 +128,6 @@ int main()
             //printf("system command");
             syscom(d,arr,comm,f);
         }
-
     }
     close(f);
 }
