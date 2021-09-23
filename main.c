@@ -6,10 +6,12 @@ int *bgproc;
 int proc;
 char *user;
 char *sysname;
+char *prev;
 int f;
 
 struct bg_proc bp[100];
 b=0;
+
 
 struct exit_proc ep[100];
 mem=0;
@@ -54,6 +56,7 @@ void check_exitted(){
 }
 int main()
 {
+    prev=(char *)malloc(200*sizeof(char));
     char * hist_path=(char *)malloc(100*sizeof(char));
     strcpy(hist_path,getenv("HOME"));
     struct stat st;
@@ -64,6 +67,7 @@ int main()
     path=(char *)malloc(200*sizeof(char));
     char initial[100];
     getcwd(initial,100);
+
     strcpy(path,initial);
     strcpy(invoked,initial);
     proc=0;
@@ -82,6 +86,10 @@ int main()
         char c[1000];
         char *d;
         d=(char *)malloc(1000*sizeof(int));
+        char **arr2= (char **)malloc(100*sizeof(char *)); ;
+        for(int i=0;i<100;i++){
+            arr2[i]=(char *)malloc(100*sizeof(char));
+        }
         gets(c);
         char **arr = (char **)malloc(100 * sizeof(char *));
         int i=0;
@@ -90,6 +98,50 @@ int main()
         }
         strcpy(d,c);
         int comm=split(c,arr);
+        int temp_out;
+        int brea=0;
+        int or=-1,direct_flag=0;
+        char fn[100];
+        dup2(STDOUT_FILENO,temp_out);
+        for(brea=0;brea<comm;brea++){
+            if(arr[brea][0]=='>'){
+                printf("%d\n",brea);
+                direct_flag=1;
+                if(strlen(arr[brea])==1){
+                    strcpy(fn,arr[brea+1]);
+                    or=open(fn,O_WRONLY|O_CREAT,0644);
+                }
+                else{
+                    (arr[brea][1]=='>')?strcpy(fn,arr[brea]+2):strcpy(fn,(arr[brea]+1));
+                    if(arr[brea][1]=='>'){
+                        if(strlen(arr[brea])==2){
+                            or=open(arr[brea+1],O_WRONLY|O_APPEND|O_CREAT,0644);
+                        }
+                        else{
+                            or=open(fn,O_WRONLY|O_APPEND|O_CREAT,0644);
+                        }
+    
+                    }
+                    else{
+                        or=open(fn,O_WRONLY|O_CREAT,0644);
+                    }
+                }
+                break;
+            }
+        }
+        if(direct_flag==1){
+            if(or<0){
+                perror("unable to open the file\n");
+            }
+            if (dup2(or, STDOUT_FILENO) < 0) {
+                perror("Unable to duplicate file descriptor.");
+                exit(1);
+            }
+        }
+        for(int i=0;i<brea;i++){
+            strcpy(arr2[i],arr[i]);
+        }
+        
         sprintf(hist_comm,"%*s",-500,d);
         strcat(hist_comm,"\n");
         stat(hist_path,&st);
@@ -103,32 +155,34 @@ int main()
             lseek(f,file_size,SEEK_SET);
             write(f,hist_comm,500);
         }
-        if(strcmp(arr[0],"cd")==0)
-            cd(d,arr,comm);
-        else if(strcmp(arr[0],"echo")==0)
-            echo(d,arr,comm);
-        else if(strcmp(arr[0],"pwd")==0)
-            pwd(d,arr,comm);
-        else if(strcmp(arr[0],"ls")==0){
-            ls(d,arr,comm);
+        if(strcmp(arr2[0],"cd")==0)
+            cd(d,arr2,brea);
+        else if(strcmp(arr2[0],"echo")==0)
+            echo(d,arr2,brea);
+        else if(strcmp(arr2[0],"pwd")==0)
+            pwd(d,arr2,brea);
+        else if(strcmp(arr2[0],"ls")==0){
+            ls(d,arr2,brea);
         }
-        else if(strcmp(arr[0],"pinfo")==0){
-            pinfo(d,arr,comm);
+        else if(strcmp(arr2[0],"pinfo")==0){
+            pinfo(d,arr2,brea);
         }
-        else if(strcmp(arr[0],"repeat")==0){
-            repeat(d,arr,comm);
+        else if(strcmp(arr2[0],"repeat")==0){
+            repeat(d,arr2,brea);
         }
-        else if(strcmp(arr[0],"history")==0){
-            history(d,arr,comm,f,hist_path);
+        else if(strcmp(arr2[0],"history")==0){
+            history(d,arr2,brea,f,hist_path);
         }
-        else if(strcmp(arr[0],"exit")==0){
+        else if(strcmp(arr2[0],"exit")==0){
             break;
         }
         else{
             //printf("system command");
-            syscom(d,arr,comm,f);
+            syscom(d,arr2,brea,f);
         }
-
+        dup2(temp_out,STDOUT_FILENO);
+        free(arr);
+        free(arr2);
     }
     close(f);
 }

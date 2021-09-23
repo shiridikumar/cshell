@@ -67,6 +67,7 @@ int main()
     path=(char *)malloc(200*sizeof(char));
     char initial[100];
     getcwd(initial,100);
+
     strcpy(path,initial);
     strcpy(invoked,initial);
     proc=0;
@@ -93,6 +94,31 @@ int main()
         }
         strcpy(d,c);
         int comm=split(c,arr);
+        int temp_out;
+        int brea=0;
+        dup2(STDOUT_FILENO,temp_out);
+        for(brea=0;brea<comm;brea++){
+            if(arr[i][0]=='>'){
+                if(strlen(arr[brea])==1){
+                    int or=open(arr[brea+1],O_WRONLY|O_CREAT,0644);
+                    if(or<0){
+                        perror("unable to open the file\n");
+                    }
+                    if (dup2(or, STDOUT_FILENO) < 0) {
+                        perror("Unable to duplicate file descriptor.");
+                        exit(1);
+                    }
+                }
+                break;
+            }
+        }
+        char **arr1 = (char **)malloc(brea*sizeof(char *));
+        int i=0;
+        for (int i = 0; i < brea; i++) {
+            arr1[i] = (char *)malloc(100* sizeof(char));
+            strcpy(arr1[i],arr[i]);
+        }
+        
         sprintf(hist_comm,"%*s",-500,d);
         strcat(hist_comm,"\n");
         stat(hist_path,&st);
@@ -106,31 +132,32 @@ int main()
             lseek(f,file_size,SEEK_SET);
             write(f,hist_comm,500);
         }
-        if(strcmp(arr[0],"cd")==0)
-            cd(d,arr,comm);
-        else if(strcmp(arr[0],"echo")==0)
-            echo(d,arr,comm);
-        else if(strcmp(arr[0],"pwd")==0)
-            pwd(d,arr,comm);
-        else if(strcmp(arr[0],"ls")==0){
-            ls(d,arr,comm);
+        if(strcmp(arr1[0],"cd")==0)
+            cd(d,arr1,comm);
+        else if(strcmp(arr1[0],"echo")==0)
+            echo(d,arr1,comm);
+        else if(strcmp(arr1[0],"pwd")==0)
+            pwd(d,arr1,comm);
+        else if(strcmp(arr1[0],"ls")==0){
+            ls(d,arr1,comm);
         }
-        else if(strcmp(arr[0],"pinfo")==0){
-            pinfo(d,arr,comm);
+        else if(strcmp(arr1[0],"pinfo")==0){
+            pinfo(d,arr1,comm);
         }
-        else if(strcmp(arr[0],"repeat")==0){
-            repeat(d,arr,comm);
+        else if(strcmp(arr1[0],"repeat")==0){
+            repeat(d,arr1,comm);
         }
-        else if(strcmp(arr[0],"history")==0){
-            history(d,arr,comm,f,hist_path);
+        else if(strcmp(arr1[0],"history")==0){
+            history(d,arr1,comm,f,hist_path);
         }
-        else if(strcmp(arr[0],"exit")==0){
+        else if(strcmp(arr1[0],"exit")==0){
             break;
         }
         else{
             //printf("system command");
-            syscom(d,arr,comm,f);
+            syscom(d,arr1,comm,f);
         }
+        dup2(temp_out,STDOUT_FILENO);
     }
     close(f);
 }
