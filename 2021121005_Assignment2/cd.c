@@ -37,6 +37,7 @@ void cd(char *c, char **arr, int comm)
 
     }
     else if(strcmp(arr[1],"-")==0){
+     
         if (chdir(prev)!= 0)
         {
             perror("Directory");
