@@ -12,6 +12,7 @@ void prompt() {
     gethostname(sysname,HOST_NAME_MAX+1);
     cmp=strncmp(path,invoked,strlen(invoked));
     if(cmp==0){
+        path[strlen(path)]='\0';
         path+=strlen(invoked);
     }
     printf("%s@%s:~%s>",user,sysname,path);    

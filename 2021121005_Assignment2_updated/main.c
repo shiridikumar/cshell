@@ -46,12 +46,12 @@ void check_exitted()
 {
     char *sta;
     char *finished;
-    finished = (char *)malloc(300 * sizeof(char));
+    finished = (char *)malloc(200 * sizeof(char));
     if (mem != 0)
     {
         printf("\n");
     }
-    sta = (char *)malloc(100 * sizeof(char));
+    sta = (char *)malloc(20 * sizeof(char));
     for (int i = 0; i < mem; i++)
     {
         sta = (WIFEXITED(ep[i].status)) ? strcpy(sta, "Normally") : strcpy(sta, "Abnormally");
@@ -62,17 +62,17 @@ void check_exitted()
 }
 int main()
 {
-    prev = (char *)malloc(300 * sizeof(char));
-    char *hist_path = (char *)malloc(300 * sizeof(char));
+    prev = (char *)malloc(200 * sizeof(char));
+    char *hist_path = (char *)malloc(100 * sizeof(char));
     strcpy(hist_path, getenv("HOME"));
     struct stat st;
     strcat(hist_path, "/history2021121005osn.txt");
     f = open(hist_path, O_RDWR | O_CREAT | O_RDONLY);
     chmod(hist_path, S_IRWXU);
-    invoked = (char *)malloc(400 * sizeof(char));
-    path = (char *)malloc(400 * sizeof(char));
-    char initial[300];
-    getcwd(initial, 300);
+    invoked = (char *)malloc(200 * sizeof(char));
+    path = (char *)malloc(200 * sizeof(char));
+    char initial[100];
+    getcwd(initial, 100);
 
     strcpy(path, initial);
     strcpy(invoked, initial);
@@ -188,6 +188,24 @@ int main()
             }
         }
         int stop;
+
+        /*if (direct_flag == 1 && direct_flag2 == 1)
+        {
+            stop = (brea2 > brea) ? brea : brea2;
+        }
+        else if (direct_flag == 1)
+        {
+            stop = brea;
+        }
+        else if (direct_flag2 == 1)
+        {
+            stop = brea2;
+        }
+        else
+        {
+            stop = (brea2 > brea) ? brea2 : brea;
+        }*/
+
         if (direct_flag == 1)
         {
             if (or < 0)
@@ -242,21 +260,14 @@ int main()
         sprintf(buff, "%*s", -500, buffer);
         strcat(buff, "\n");
         int k;
-        int pipe_flag=0;
-        for(int i=0;i<strlen(d);i++){
-            if(d[i]=='|'){
-                pipe_flag=1;
-            }
-        }
+
+
         if (strncmp(buff, hist_comm, 500) != 0)
         {
             lseek(f, file_size, SEEK_SET);
             write(f, hist_comm, 500);
         }
-        if(pipe_flag==1){
-            pipecom(d,arr2,stop,temp_in,temp_out);
-        }
-        else if (comm == 0 || stop == 0)
+        if (comm == 0 || stop == 0)
         {
             if(direct_flag==1)
                 dup2(temp_out, 1);
