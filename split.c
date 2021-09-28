@@ -9,7 +9,7 @@ int split(char *c, char **comm)
     int k = 0;
     while (i < strlen(command))
     {
-        if (command[i] == ' ' || command[i] == '\t')
+        if ((command[i] == ' ' || command[i] == '\t')) 
         {
             if (i != j)
             {
@@ -17,7 +17,6 @@ int split(char *c, char **comm)
                 comm[k][i - j] = '\0';
                 k++;
             }
-
             while (command[i] == ' ' || command[i] == '\t')
             {
                 ++i;
@@ -29,8 +28,10 @@ int split(char *c, char **comm)
             ++i;
         }
     }
-    strcpy(comm[k], command + j);
-    comm[k][i - j] = '\0';
-    k++;
+    if(command[i-1]!=' ' && command[i-1]!='\t'){
+        strcpy(comm[k], command + j);
+        comm[k][i - j] = '\0';
+        k++;
+    }
     return k;
 }
