@@ -7,7 +7,7 @@ void pipecom(char *d, char **arr, int comm, int temp_in, int temp_out, char *his
     for (int i = 0; i < comm; i++)
     {
         strcat(command, arr[i]);
-        strcat(command," ");
+        strcat(command, " ");
     }
     char **newarr = (char **)malloc(100 * sizeof(char *));
     for (int i = 0; i < 100; i++)
@@ -27,35 +27,38 @@ void pipecom(char *d, char **arr, int comm, int temp_in, int temp_out, char *his
 
     strncpy(newarr[coun++], command + prev, strlen(command) - prev);
     int pipe_in, pipe_out;
+    int ends[2];
+    if (pipe(ends) < 0)
+    {
+        perror("could not create pipe");
+    }
+    pipe_in = ends[0];
+    pipe_out = ends[1];
+    int f;
+    int status;
     for (int i = 0; i < coun; i++)
     {
-        char **sub_arr = (char **)malloc(100 * sizeof(char *));
-        int ends[2];
-        if (pipe(ends) < 0)
+        f = fork();
+        if (f == 0)
         {
-            perror("could not create pipe");
-        }
-        if (i == coun - 1)
-        {
-            if (dup2(temp_out, 1) < 0)
-            {
-                perror("Unable to creatae pipe in");
+            close(ends[0]);
+            if(i==coun-1){
+                dup2(temp_out,1);
             }
+            else{
+                dup2(ends[1], 1);
+            }
+            execute(newarr[i], hist_comm, hist_path, buffer, buff);
+            exit(1);
         }
         else
         {
-            if (dup2(ends[1], 1) < 0)
-            {
-                perror("Unable to creatae pipe out");
-            }
-        }
-        execute(newarr[i], hist_comm, hist_path, buffer, buff);
-
-        if (dup2(ends[0], 0) < 0)
-        {
-            perror("unable to create pipe in");
+            waitpid(f, &status, 0);
+            dup2(ends[0],0);
+            close(ends[1]);
         }
     }
-    dup2(temp_in, 0);
     dup2(temp_out, 1);
+    dup2(temp_in, 0);
+    
 }
