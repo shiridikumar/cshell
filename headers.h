@@ -12,6 +12,7 @@
 struct bg_proc{
     int pid;
     char* name;
+    int seq;
 };
 
 struct bg_proc bp[100];

@@ -45,6 +45,7 @@ void syscom(char *c, char **arr, int comm,int f)
                 printf("Process id %d\n",x);
                 bp[b].pid=x;
                 bp[b].name=args[0];
+                bp[b].seq=b+1;
                 b++;
             }
         }
