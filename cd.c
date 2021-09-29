@@ -80,5 +80,4 @@ void cd(char *c, char **arr, int comm)
             strcpy(path, wd);
         }
     }
-    printf("hello world\n");
 }

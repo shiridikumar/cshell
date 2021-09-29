@@ -260,6 +260,9 @@ int execute(char *c, char *hist_comm, char *hist_path, char *buffer, char *buff)
     {
         return 0;
     }
+    else if(strcmp(arr2[0],"jobs")==0){
+        jobs(d,arr2,stop);
+    }
     else
     {
         syscom(d, arr2, stop, f);
