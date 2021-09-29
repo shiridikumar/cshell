@@ -24,7 +24,6 @@ void pipecom(char *d, char **arr, int comm, int temp_in, int temp_out, char *his
             coun++;
         }
     }
-
     strncpy(newarr[coun++], command + prev, strlen(command) - prev);
     int pipe_in, pipe_out;
     int ends[2];
@@ -38,15 +37,20 @@ void pipecom(char *d, char **arr, int comm, int temp_in, int temp_out, char *his
     int status;
     for (int i = 0; i < coun; i++)
     {
+        pipe(ends);
         f = fork();
         if (f == 0)
         {
-            close(ends[0]);
             if(i==coun-1){
-                dup2(temp_out,1);
+                if(dup2(temp_out,1)<0){
+                    perror("Unable to create pipe");
+                }
             }
             else{
-                dup2(ends[1], 1);
+                if(dup2(ends[1], 1)<0){
+                    perror("There is an error in creating in out pipe");
+                }
+                close(ends[0]);
             }
             execute(newarr[i], hist_comm, hist_path, buffer, buff);
             exit(1);

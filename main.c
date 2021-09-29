@@ -224,7 +224,7 @@ int execute(char *c, char *hist_comm, char *hist_path, char *buffer, char *buff)
     }
     if (pipe_flag == 1)
     {
-        pipecom(d, arr2, stop, temp_in, temp_out,hist_comm, hist_path, buffer, buff);
+        pipecom(d, arr, comm, temp_in, temp_out,hist_comm, hist_path, buffer, buff);
     }
     else if (comm == 0 || stop == 0)
     {
