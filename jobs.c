@@ -5,19 +5,31 @@ void jobs(char *c, char **arr,int comm){
     int temp_id;
     int temp_seq;
     char * temp_name=(char *)malloc(100*sizeof(char));
+    struct bg_dup{
+        int pid;
+        char* name;
+        int seq;
+    };
+    struct bg_dup bp1[1000];
+    for(int i=0;i<b;i++){
+        bp1[i].pid=bp[i].pid;
+        bp1[i].name=bp[i].name;
+        bp1[i].seq=bp[i].seq;
+    }
+
     for (int i=0;i<b;i++){
         for(int j=0;j<b-1;j++){
-            if(strcmp(bp[j].name,bp[j+1].name)>0){
-                temp_id=bp[j].pid;temp_name=bp[j].name;temp_seq=bp[j].seq;
-                bp[j].pid=bp[j+1].pid;bp[j].name=bp[j+1].name;bp[j].seq=bp[j+1].seq;
-                bp[j+1].pid=temp_id;bp[j+1].name=temp_name;bp[j+1].seq=temp_seq;
+            if(strcmp(bp1[j].name,bp1[j+1].name)>0){
+                temp_id=bp1[j].pid;temp_name=bp1[j].name;temp_seq=bp1[j].seq;
+                bp1[j].pid=bp1[j+1].pid;bp1[j].name=bp1[j+1].name;bp1[j].seq=bp1[j+1].seq;
+                bp1[j+1].pid=temp_id;bp1[j+1].name=temp_name;bp1[j+1].seq=temp_seq;
             }
         }
     }
     int flag=0;
     char *state=(char *)malloc(50*sizeof(char));
     for(int i=0;i<b;i++){
-        pinfo_status(c,bp[i].pid,1,status);
+        pinfo_status(c,bp1[i].pid,1,status);
         if(strcmp(status,"E")!=0){
             if(strcmp(status,"R")==0)
                 strcpy(state,"Running");
@@ -41,11 +53,9 @@ void jobs(char *c, char **arr,int comm){
                 }
             }
             if(flag==1){
-                printf("[%d] %s %s [%d]\n",bp[i].seq,state,bp[i].name,bp[i].pid);
+                printf("[%d] %s %s [%d]\n",bp1[i].seq,state,bp1[i].name,bp1[i].pid);
             }
         }
         strcpy(status,"");
     }
-
-
 }

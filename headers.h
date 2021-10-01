@@ -15,14 +15,16 @@ struct bg_proc{
     int seq;
 };
 
-struct bg_proc bp[100];
+struct bg_proc bp[1000];
 
 int b;
+int s;
 
 struct exit_proc{
     int status;
     int pid;
     char* name;
+    int num;
 };
 int mem;
 

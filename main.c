@@ -11,10 +11,9 @@ int f;
 struct stat st;
 char initial[300];
 
-struct bg_proc bp[100];
 b = 0;
-
-struct exit_proc ep[100];
+s=0;
+struct exit_proc ep[1000];
 mem = 0;
 
 void exitted()
@@ -29,16 +28,17 @@ void exitted()
             ep[mem].pid = x;
             ep[mem].status = status;
             ep[mem].name = bp[j].name;
+            ep[mem].num=j;
             mem++;
-            ind =j;
+            ind =bp[j].seq;
+            for(int i=j+1;i<b;i++){
+                bp[i].seq-=1;
+            }
+            s--;
+            check_exitted();
             break;
         }
-
     }
-    for(int i=ind+1;i<b;i++){
-        bp[i].seq-=1;
-    }
-    check_exitted();
 }
 
 void check_exitted()

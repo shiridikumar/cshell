@@ -2,6 +2,7 @@
 extern int* bgproc;
 extern int proc;
 
+
 void syscom(char *c, char **arr, int comm,int f)
 {
     char *command;
@@ -45,9 +46,12 @@ void syscom(char *c, char **arr, int comm,int f)
                 printf("Process id %d\n",x);
                 bp[b].pid=x;
                 bp[b].name=args[0];
-                bp[b].seq=b+1;
+                bp[b].seq=s+1;
+                s++;
                 b++;
                 setpgid(0,0);
+                kill(SIGSTOP,x);
+                kill(SIGCONT,x);
             }
         }
         else
