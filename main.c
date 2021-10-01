@@ -21,6 +21,7 @@ void exitted()
 {
     int status;
     int x = waitpid(-1, &status, WNOHANG);
+    int ind=b;
     for (int j = 0; j < b; j++)
     {
         if (x == bp[j].pid)
@@ -29,8 +30,13 @@ void exitted()
             ep[mem].status = status;
             ep[mem].name = bp[j].name;
             mem++;
+            ind =j;
             break;
         }
+
+    }
+    for(int i=ind+1;i<b;i++){
+        bp[i].seq-=1;
     }
     check_exitted();
 }
@@ -263,6 +269,8 @@ int execute(char *c, char *hist_comm, char *hist_path, char *buffer, char *buff)
     else if(strcmp(arr2[0],"jobs")==0){
         jobs(d,arr2,stop);
     }
+    else if(strcmp(arr2[0],"sig")==0)
+        signals(d,arr2,stop);
     else
     {
         syscom(d, arr2, stop, f);

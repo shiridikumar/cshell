@@ -47,6 +47,7 @@ void syscom(char *c, char **arr, int comm,int f)
                 bp[b].name=args[0];
                 bp[b].seq=b+1;
                 b++;
+                setpgid(0,0);
             }
         }
         else
@@ -61,6 +62,7 @@ void syscom(char *c, char **arr, int comm,int f)
             }
             else
             {
+                setpgid(0,0);
                 waitpid(x, &status, 0);
             }
         }
