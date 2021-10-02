@@ -9,6 +9,19 @@ void interrupt_handler(){
     
 }
 
+void stop_handler(){
+    if(fgp!=0){
+        kill(fgp,SIGSTOP);
+        printf("\n%s with process id %d is stopped\n",fg_name,fgp);
+        bp[b].name=fg_name;
+        bp[b].pid=fgp;
+        bp[b].seq=s+1;
+        b++;
+        s++;
+        fgp=0;
+    }
+}
+
 void syscom(char *c, char **arr, int comm,int f)
 {
     char *command;
@@ -71,10 +84,14 @@ void syscom(char *c, char **arr, int comm,int f)
             }
             else
             {
+                signal(SIGTSTP,stop_handler);
+                signal(SIGINT,interrupt_handler);
                 setpgid(0,0);
                 fgp=x;
-                signal(SIGINT,interrupt_handler);
-                waitpid(x, &status, 0);
+                strcpy(fg_name,arr[0]);
+                if(fgp!=0){
+                    waitpid(x, &status, WUNTRACED);
+                }
                 signal(SIGINT,SIG_IGN);
             }
         }

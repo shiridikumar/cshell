@@ -8,6 +8,7 @@ void pipecom(char *d, char **arr, int comm, int temp_in, int temp_out, char *his
     {
         strcat(command, arr[i]);
         strcat(command, " ");
+        printf("%s\n",arr[i]);
     }
     char **newarr = (char **)malloc(100 * sizeof(char *));
     for (int i = 0; i < 100; i++)

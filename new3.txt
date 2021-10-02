@@ -1,4 +1,0 @@
-pid -- 6999
-Process Status -- R+
-memory -- 2720
-Executable Path -- /home/shirdi/cfiles/cshell/a.out

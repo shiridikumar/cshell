@@ -13,8 +13,17 @@ char initial[300];
 fgp=0;
 b = 0;
 s=0;
+int gpid;
+int ctrld=-1;
+char ctrl[1000];
 struct exit_proc ep[1000];
 mem = 0;
+
+
+void detect_ctrl(){
+    char *inp=(char *)malloc(100*sizeof(char));
+    kill(getpid(),SIGQUIT);
+}
 void proc_bg(int sig, siginfo_t* si, void *unused){
     printf("the process is being stopped\n");
 }
@@ -44,6 +53,7 @@ void exitted()
         }
     }
 }
+
 
 void check_exitted()
 {
@@ -81,6 +91,7 @@ int execute(char *c, char *hist_comm, char *hist_path, char *buffer, char *buff)
         arr[i] = (char *)malloc(100 * sizeof(char));
     }
     strcpy(d, c);
+    strcpy(ctrl,d);
     int comm = split(c, arr);
     if (comm == 1 && strlen(arr[0]) == 0)
     {
@@ -276,7 +287,11 @@ int execute(char *c, char *hist_comm, char *hist_path, char *buffer, char *buff)
     else if(strcmp(arr2[0],"sig")==0)
         signals(d,arr2,stop);
     else if(strcmp(arr2[0],"fg")==0){
+        //signal(SIGTSTP,stop_handler2);
         fg(d,arr2,stop);
+    }
+    else if(strcmp("bg",arr2[0])==0){
+        bg(d,arr2,stop);
     }
     else
     {
@@ -293,6 +308,7 @@ int execute(char *c, char *hist_comm, char *hist_path, char *buffer, char *buff)
 
 int main()
 {
+    fg_name=(char *)malloc(50*sizeof(char));
     prev = (char *)malloc(300 * sizeof(char));
     char *hist_path = (char *)malloc(300 * sizeof(char));
     strcpy(hist_path, getenv("HOME"));
@@ -304,6 +320,7 @@ int main()
     getcwd(initial, 300);
     strcpy(path, initial);
     strcpy(invoked, initial);
+    gpid=getpid();
     proc = 0;
     signal(SIGCHLD, exitted);
     bgproc = (int *)malloc(1000 * sizeof(int));
@@ -317,7 +334,12 @@ int main()
         size_t size = 200;
         char c[1000];
         signal(SIGINT,SIG_IGN);
-        gets(c);
+        signal(SIGTSTP,SIG_IGN);
+        ctrld=fgets(c,1000,stdin);
+        if(ctrld==0){
+            kill(getpid(),SIGTERM);
+        }
+        c[strlen(c)-1]='\0';
         signal(SIGINT,SIG_DFL);
         int cl = execute(c, hist_comm, hist_path, buffer, buff);
         if (cl != 1)

@@ -30,5 +30,7 @@ struct exit_proc{
 int mem;
 
 int fgp;
+char* fg_name;
+
 
 
