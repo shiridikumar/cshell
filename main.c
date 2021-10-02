@@ -10,7 +10,7 @@ char *prev;
 int f;
 struct stat st;
 char initial[300];
-
+fgp=0;
 b = 0;
 s=0;
 struct exit_proc ep[1000];
@@ -18,6 +18,8 @@ mem = 0;
 void proc_bg(int sig, siginfo_t* si, void *unused){
     printf("the process is being stopped\n");
 }
+
+
 void exitted()
 {
     int status;
@@ -274,7 +276,9 @@ int execute(char *c, char *hist_comm, char *hist_path, char *buffer, char *buff)
     else if(strcmp(arr2[0],"sig")==0)
         signals(d,arr2,stop);
     else if(strcmp(arr2[0],"fg")==0){
+        signal(SIGINT,SIG_DFL);
         fg(d,arr2,stop);
+        signal(SIGINT,SIG_IGN);
     }
     else
     {

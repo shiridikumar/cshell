@@ -23,7 +23,6 @@ void fg(char *d, char **arr, int comm)
     else
     {
         int dup_pid = getpgrp();
-        //kill(getpid(),SIGSTOP);
         signal(SIGTTIN, SIG_IGN);
         signal(SIGTTOU, SIG_IGN);
         tcsetpgrp(STDIN_FILENO, gpid);

@@ -2,6 +2,12 @@
 extern int* bgproc;
 extern int proc;
 
+void interrupt_handler(){
+    if(fgp!=0){
+        kill(fgp,SIGINT);
+    }
+    
+}
 
 void syscom(char *c, char **arr, int comm,int f)
 {
@@ -66,7 +72,10 @@ void syscom(char *c, char **arr, int comm,int f)
             else
             {
                 setpgid(0,0);
+                fgp=x;
+                signal(SIGINT,interrupt_handler);
                 waitpid(x, &status, 0);
+                signal(SIGINT,SIG_IGN);
             }
         }
     }
