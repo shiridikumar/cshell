@@ -36,7 +36,7 @@ void syscom(char *c, char **arr, int comm,int f)
             x = fork();
             if (x == 0)
             {
-                setpgid(0, 0);
+                setpgid(0,0);
                 if(execvp(args[0], args)<0){
                     perror("Invalid Command");
                 }
@@ -49,9 +49,7 @@ void syscom(char *c, char **arr, int comm,int f)
                 bp[b].seq=s+1;
                 s++;
                 b++;
-                setpgid(0,0);
-                kill(SIGSTOP,x);
-                kill(SIGCONT,x);
+
             }
         }
         else

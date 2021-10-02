@@ -15,7 +15,9 @@ b = 0;
 s=0;
 struct exit_proc ep[1000];
 mem = 0;
-
+void proc_bg(int sig, siginfo_t* si, void *unused){
+    printf("the process is being stopped\n");
+}
 void exitted()
 {
     int status;
@@ -300,7 +302,18 @@ int main()
     proc = 0;
     //signal(SIGTSTP,NULL);
     //signal(SIGCONT,NULL);
-    signal(SIGCHLD, exitted);
+    struct sigaction sa = {0};
+
+    sigemptyset(&sa.sa_mask);
+    sigaddset(&sa.sa_mask, SIGCHLD);
+    sa.sa_flags = SA_SIGINFO;
+    sa.sa_sigaction = proc_bg;
+
+    if(sigaction(SIGCHLD, &sa, NULL) < 0 ){
+        perror("sigaction");
+    }
+
+    //signal(SIGCHLD, exitted);
     bgproc = (int *)malloc(1000 * sizeof(int));
     char *buff = (char *)malloc(501 * sizeof(char));
     char *hist_comm = (char *)malloc(501 * sizeof(char));
