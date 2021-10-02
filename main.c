@@ -273,6 +273,9 @@ int execute(char *c, char *hist_comm, char *hist_path, char *buffer, char *buff)
     }
     else if(strcmp(arr2[0],"sig")==0)
         signals(d,arr2,stop);
+    else if(strcmp(arr2[0],"fg")==0){
+        fg(d,arr2,stop);
+    }
     else
     {
         syscom(d, arr2, stop, f);
@@ -300,20 +303,7 @@ int main()
     strcpy(path, initial);
     strcpy(invoked, initial);
     proc = 0;
-    //signal(SIGTSTP,NULL);
-    //signal(SIGCONT,NULL);
-    struct sigaction sa = {0};
-
-    sigemptyset(&sa.sa_mask);
-    sigaddset(&sa.sa_mask, SIGCHLD);
-    sa.sa_flags = SA_SIGINFO;
-    sa.sa_sigaction = proc_bg;
-
-    if(sigaction(SIGCHLD, &sa, NULL) < 0 ){
-        perror("sigaction");
-    }
-
-    //signal(SIGCHLD, exitted);
+    signal(SIGCHLD, exitted);
     bgproc = (int *)malloc(1000 * sizeof(int));
     char *buff = (char *)malloc(501 * sizeof(char));
     char *hist_comm = (char *)malloc(501 * sizeof(char));

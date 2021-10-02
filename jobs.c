@@ -34,7 +34,7 @@ void jobs(char *c, char **arr,int comm){
             if(strcmp(status,"R")==0)
                 strcpy(state,"Running");
             else if(strcmp(status,"S")==0){
-                strcpy(state,"Stopped");}
+                strcpy(state,"Running");}
             else if(strcmp(status,"T")==0){
                 strcpy(state,"Stopped");
             }

@@ -7,6 +7,7 @@
 #include <dirent.h>
 #include<sys/stat.h>
 #include<sys/wait.h>
+#include<errno.h>
 
 
 struct bg_proc{

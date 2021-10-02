@@ -18,6 +18,7 @@ void pinfo(char *d ,char **arr,int comm){
     
     char file[1000];
     int file_size=1000;
+    FILE * f1=fopen(procpath,"r");
     int f = open(procpath, O_RDONLY); 
     if(f<0){
         printf("\n Unable to open : %s ", procpath);
@@ -73,6 +74,8 @@ void pinfo(char *d ,char **arr,int comm){
     printf("memory -- %s\n",memory);
     //exe
     printf("Executable Path -- %s\n",buffer);
+    close(f);
+    fclose(f1);
 }
 
 

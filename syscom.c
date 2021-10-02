@@ -40,13 +40,20 @@ void syscom(char *c, char **arr, int comm,int f)
                 if(execvp(args[0], args)<0){
                     perror("Invalid Command");
                 }
-                exit(0);
             }
             else{
+                signal(SIGTTIN,SIG_IGN);
+                signal(SIGTTOU,SIG_IGN);
                 printf("Process id %d\n",x);
                 bp[b].pid=x;
                 bp[b].name=args[0];
                 bp[b].seq=s+1;
+                signal(SIGTTOU,SIG_IGN);
+                signal(SIGTTIN,SIG_IGN);
+                tcsetpgrp(STDIN_FILENO,getpgrp());
+                tcsetpgrp(STDOUT_FILENO,getpgrp());
+                signal(SIGTTOU,SIG_DFL);
+                signal(SIGTTIN,SIG_DFL);
                 s++;
                 b++;
 
