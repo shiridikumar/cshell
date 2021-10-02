@@ -276,9 +276,7 @@ int execute(char *c, char *hist_comm, char *hist_path, char *buffer, char *buff)
     else if(strcmp(arr2[0],"sig")==0)
         signals(d,arr2,stop);
     else if(strcmp(arr2[0],"fg")==0){
-        signal(SIGINT,SIG_DFL);
         fg(d,arr2,stop);
-        signal(SIGINT,SIG_IGN);
     }
     else
     {
@@ -318,7 +316,9 @@ int main()
         prompt();
         size_t size = 200;
         char c[1000];
+        signal(SIGINT,SIG_IGN);
         gets(c);
+        signal(SIGINT,SIG_DFL);
         int cl = execute(c, hist_comm, hist_path, buffer, buff);
         if (cl != 1)
         {
