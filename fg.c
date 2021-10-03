@@ -1,16 +1,6 @@
 #include "headers.h"
 extern gpid;
 
-void stop_handler2(){
-    kill(gpid,SIGSTOP);
-    if(fgp!=0){
-        printf("\n%s with process id %d is stopped\n",fg_name,fgp);
-    }
-}
-
-void interrupt_handler2(){
-    kill(gpid,SIGINT);
-}
 
 
 
@@ -42,10 +32,10 @@ void fg(char *d, char **arr, int comm)
     else
     {
         int dup_pid = getpgrp();
-        signal(SIGTSTP,stop_handler2);
-        signal(SIGINT,interrupt_handler2);
         signal(SIGTTIN, SIG_IGN);
         signal(SIGTTOU, SIG_IGN);
+        tcsetpgrp(STDIN_FILENO, gpid);
+        tcsetpgrp(STDOUT_FILENO,gpid);
         kill(gpid,SIGCONT);
         int status;
         waitpid(gpid, &status, WUNTRACED);

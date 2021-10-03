@@ -20,6 +20,21 @@ struct exit_proc ep[1000];
 mem = 0;
 
 
+void stop_handler2(){
+    kill(gpid,SIGSTOP);
+    if(fgp!=0){
+        printf("\n%s with process id %d is stopped\n",fg_name,fgp);
+        fgp=0;
+    }
+}
+
+void interrupt_handler2(){
+    if(fgp!=0){
+        kill(gpid,SIGINT);
+        fgp=0;
+    }
+}
+
 void detect_ctrl(){
     char *inp=(char *)malloc(100*sizeof(char));
     kill(getpid(),SIGQUIT);
@@ -340,7 +355,8 @@ int main()
             kill(getpid(),SIGTERM);
         }
         c[strlen(c)-1]='\0';
-        signal(SIGINT,SIG_DFL);
+        signal(SIGINT,interrupt_handler2);
+        signal(SIGTSTP,stop_handler2);
         int cl = execute(c, hist_comm, hist_path, buffer, buff);
         if (cl != 1)
         {
