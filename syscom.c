@@ -13,7 +13,7 @@ void stop_handler(){
     if(fgp!=0){
         kill(fgp,SIGSTOP);
         printf("\n%s with process id %d is stopped\n",fg_name,fgp);
-        bp[b].name=fg_name;
+        strcpy(bp[b].name,fg_name);
         bp[b].pid=fgp;
         bp[b].seq=s+1;
         b++;
@@ -63,7 +63,7 @@ void syscom(char *c, char **arr, int comm,int f)
             else{
                 printf("Process id %d\n",x);
                 bp[b].pid=x;
-                bp[b].name=args[0];
+                strcpy(bp[b].name,args[0]);
                 bp[b].seq=s+1;
                 tcsetpgrp(STDIN_FILENO,getpgrp());
                 tcsetpgrp(STDOUT_FILENO,getpgrp());

@@ -12,7 +12,7 @@
 
 struct bg_proc{
     int pid;
-    char* name;
+    char name[100];
     int seq;
 };
 
@@ -24,13 +24,16 @@ int s;
 struct exit_proc{
     int status;
     int pid;
-    char* name;
+    char name[100];
     int num;
 };
 int mem;
 
 int fgp;
 char* fg_name;
+
+char dup_name[50];
+int prompted;
 
 
 

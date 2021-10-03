@@ -10,57 +10,63 @@ char *prev;
 int f;
 struct stat st;
 char initial[300];
-fgp=0;
+fgp = 0;
 b = 0;
-s=0;
+s = 0;
 int gpid;
-int ctrld=-1;
+int ctrld = -1;
 char ctrl[1000];
 struct exit_proc ep[1000];
 mem = 0;
 
 
-void stop_handler2(){
-    kill(gpid,SIGSTOP);
-    if(fgp!=0){
-        printf("\n%s with process id %d is stopped\n",fg_name,fgp);
-        fgp=0;
+void stop_handler2()
+{
+    kill(gpid, SIGSTOP);
+    if (fgp != 0)
+    {
+        printf("\n%s with process id %d is stopped\n", fg_name, fgp);
+        fgp = 0;
     }
 }
 
-void interrupt_handler2(){
-    if(fgp!=0){
-        kill(gpid,SIGINT);
-        fgp=0;
+void interrupt_handler2()
+{
+    if (fgp != 0)
+    {
+        kill(gpid, SIGINT);
+        fgp = 0;
     }
 }
 
-void detect_ctrl(){
-    char *inp=(char *)malloc(100*sizeof(char));
-    kill(getpid(),SIGQUIT);
+void detect_ctrl()
+{
+    char *inp = (char *)malloc(100 * sizeof(char));
+    kill(getpid(), SIGQUIT);
 }
-void proc_bg(int sig, siginfo_t* si, void *unused){
+void proc_bg(int sig, siginfo_t *si, void *unused)
+{
     printf("the process is being stopped\n");
 }
-
 
 void exitted()
 {
     int status;
     int x = waitpid(-1, &status, WNOHANG);
-    int ind=b;
+    int ind = b;
     for (int j = 0; j < b; j++)
     {
         if (x == bp[j].pid)
         {
             ep[mem].pid = x;
             ep[mem].status = status;
-            ep[mem].name = bp[j].name;
-            ep[mem].num=j;
+            strcpy(ep[mem].name, bp[j].name);
+            ep[mem].num = j;
             mem++;
-            ind =bp[j].seq;
-            for(int i=j+1;i<b;i++){
-                bp[i].seq-=1;
+            ind = bp[j].seq;
+            for (int i = j + 1; i < b; i++)
+            {
+                bp[i].seq -= 1;
             }
             s--;
             check_exitted();
@@ -68,7 +74,6 @@ void exitted()
         }
     }
 }
-
 
 void check_exitted()
 {
@@ -92,7 +97,7 @@ void check_exitted()
 int execute(char *c, char *hist_comm, char *hist_path, char *buffer, char *buff)
 {
     char *d;
-    d = (char *)malloc(1000 * sizeof(int));
+    d = (char *)malloc(500 * sizeof(int));
     char **arr2 = (char **)malloc(100 * sizeof(char *));
     ;
     for (int i = 0; i < 100; i++)
@@ -106,7 +111,7 @@ int execute(char *c, char *hist_comm, char *hist_path, char *buffer, char *buff)
         arr[i] = (char *)malloc(100 * sizeof(char));
     }
     strcpy(d, c);
-    strcpy(ctrl,d);
+    strcpy(ctrl, d);
     int comm = split(c, arr);
     if (comm == 1 && strlen(arr[0]) == 0)
     {
@@ -260,7 +265,7 @@ int execute(char *c, char *hist_comm, char *hist_path, char *buffer, char *buff)
     }
     if (pipe_flag == 1)
     {
-        pipecom(d, arr, comm, temp_in, temp_out,hist_comm, hist_path, buffer, buff);
+        pipecom(d, arr, comm, temp_in, temp_out, hist_comm, hist_path, buffer, buff);
     }
     else if (comm == 0 || stop == 0)
     {
@@ -296,17 +301,20 @@ int execute(char *c, char *hist_comm, char *hist_path, char *buffer, char *buff)
     {
         return 0;
     }
-    else if(strcmp(arr2[0],"jobs")==0){
-        jobs(d,arr2,stop);
+    else if (strcmp(arr2[0], "jobs") == 0)
+    {
+        jobs(d, arr2, stop);
     }
-    else if(strcmp(arr2[0],"sig")==0)
-        signals(d,arr2,stop);
-    else if(strcmp(arr2[0],"fg")==0){
+    else if (strcmp(arr2[0], "sig") == 0)
+        signals(d, arr2, stop);
+    else if (strcmp(arr2[0], "fg") == 0)
+    {
         //signal(SIGTSTP,stop_handler2);
-        fg(d,arr2,stop);
+        fg(d, arr2, stop);
     }
-    else if(strcmp("bg",arr2[0])==0){
-        bg(d,arr2,stop);
+    else if (strcmp("bg", arr2[0]) == 0)
+    {
+        bg(d, arr2, stop);
     }
     else
     {
@@ -323,7 +331,7 @@ int execute(char *c, char *hist_comm, char *hist_path, char *buffer, char *buff)
 
 int main()
 {
-    fg_name=(char *)malloc(50*sizeof(char));
+    fg_name = (char *)malloc(50 * sizeof(char));
     prev = (char *)malloc(300 * sizeof(char));
     char *hist_path = (char *)malloc(300 * sizeof(char));
     strcpy(hist_path, getenv("HOME"));
@@ -335,7 +343,7 @@ int main()
     getcwd(initial, 300);
     strcpy(path, initial);
     strcpy(invoked, initial);
-    gpid=getpid();
+    gpid = getpid();
     proc = 0;
     signal(SIGCHLD, exitted);
     bgproc = (int *)malloc(1000 * sizeof(int));
@@ -346,22 +354,59 @@ int main()
     while (1)
     {
         prompt();
+        int cl;
+        signal(SIGINT, SIG_IGN);
+        signal(SIGTSTP, SIG_IGN);
         size_t size = 200;
-        char c[1000];
-        signal(SIGINT,SIG_IGN);
-        signal(SIGTSTP,SIG_IGN);
-        ctrld=fgets(c,1000,stdin);
-        if(ctrld==0){
-            kill(getpid(),SIGTERM);
-        }
-        c[strlen(c)-1]='\0';
-        signal(SIGINT,interrupt_handler2);
-        signal(SIGTSTP,stop_handler2);
-        int cl = execute(c, hist_comm, hist_path, buffer, buff);
-        if (cl != 1)
+        char c[500];
+        char *act_com=(char *)malloc(10000*sizeof(char));
+        char **comm_arr = (char **)malloc(200 * sizeof(char *));
+        for (int i = 0; i < 200; i++)
         {
+            comm_arr[i] = (char *)malloc(500 * sizeof(char));
+        }
+        int prev = 0, coun = 0;
+        ctrld = fgets(act_com, 500 * 200, stdin);
+        act_com[strlen(act_com)-1]='\0';
+        for (int i = 0; i < strlen(act_com); i++)
+        {
+            if (act_com[i] == ';')
+            {
+                strncpy(comm_arr[coun], act_com + prev, i - prev);
+                comm_arr[coun][i-prev]='\0';
+                prev = i + 1;
+                coun++;
+            }
+        }
+        strncpy(comm_arr[coun], act_com + prev, strlen(act_com) - prev);
+        comm_arr[coun][strlen(act_com)-prev]='\0';
+        coun++;
+
+        for (int i = 0; i < coun; i++)
+        {
+            signal(SIGINT, interrupt_handler2);
+            signal(SIGTSTP, stop_handler2);
+            if (ctrld == 0)
+            {
+                kill(getpid(), SIGTERM);
+            }
+            strcpy(c,comm_arr[i]);
+            cl = execute(c, hist_comm, hist_path, buffer, buff);
+            if (cl != 1)
+            {
+                break;
+            }
+        }
+        if(cl!=1){
             break;
         }
+        signal(SIGINT, interrupt_handler2);
+        signal(SIGTSTP, stop_handler2);
+        free(act_com);
+        for(int i=0;i<200;i++){
+            free(comm_arr[i]);
+        }
+        free(comm_arr);
     }
     close(f);
 }

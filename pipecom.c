@@ -8,7 +8,6 @@ void pipecom(char *d, char **arr, int comm, int temp_in, int temp_out, char *his
     {
         strcat(command, arr[i]);
         strcat(command, " ");
-        printf("%s\n",arr[i]);
     }
     char **newarr = (char **)malloc(100 * sizeof(char *));
     for (int i = 0; i < 100; i++)
@@ -22,10 +21,13 @@ void pipecom(char *d, char **arr, int comm, int temp_in, int temp_out, char *his
         {
             strncpy(newarr[coun], command + prev, i - prev);
             prev = i + 1;
+            newarr[coun][i-prev]='\0';
             coun++;
         }
     }
-    strncpy(newarr[coun++], command + prev, strlen(command) - prev);
+    strncpy(newarr[coun], command + prev, strlen(command) - prev);
+    newarr[coun][strlen(command)-prev]='\0';
+    coun++;
     int pipe_in, pipe_out;
     int ends[2];
     if (pipe(ends) < 0)
