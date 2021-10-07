@@ -6,10 +6,10 @@ void replay(char *d, char **arr, int comm)
     {
         printf("Invlaid no of arguments\n");
     }
-    char **newarr = (char **)malloc(100 * sizeof(char *));
+    char **newarr = (char **)malloc(1000 * sizeof(char *));
     for (int i = 0; i < 100; i++)
     {
-        newarr[i] = (char *)malloc(100 * sizeof(char));
+        newarr[i] = (char *)malloc(1000 * sizeof(char));
     }
     int c = 0;
     for (int i = 2; i < comm - 4; i++)
@@ -34,20 +34,20 @@ void replay(char *d, char **arr, int comm)
         {
             perror("Invlaid command");
         }
-        for (int i = 0; i < endtime/rtime; i++)
+        for (int i = 0; i < endtime / rtime; i++)
         {
             sleep(rtime);
             int f = fork();
             if (f == 0)
             {
-                if(execvp(newarr[0],newarr)<0){
+                if (execvp(newarr[0], newarr) < 0)
+                {
                     perror("invlaid command");
                 }
-
             }
-            else{
-                waitpid(f,NULL,0);
-
+            else
+            {
+                waitpid(f, NULL, 0);
             }
         }
     }

@@ -1,9 +1,6 @@
 #include "headers.h"
 extern gpid;
 
-
-
-
 void fg(char *d, char **arr, int comm)
 {
     int gp;
